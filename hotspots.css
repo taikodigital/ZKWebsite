@@ -1,0 +1,17 @@
+.scene-hotspot::after {
+  inset: 0;
+}
+
+.steam-hotspot {
+  left: 56.2%;
+  top: 82.4%;
+  width: 14.6%;
+  height: 6.2%;
+}
+
+.taiko-hotspot {
+  left: 70.8%;
+  top: 82.4%;
+  width: 8.2%;
+  height: 6.2%;
+}
