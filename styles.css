@@ -4,6 +4,10 @@
   --control-border: rgba(255, 230, 142, 0.28);
   --control-active: #ffd21f;
   --control-text: #f8f1d7;
+  --scene-content-left: 0px;
+  --scene-content-top: 0px;
+  --scene-content-width: 100%;
+  --scene-content-height: 100%;
 }
 
 * {
@@ -84,6 +88,49 @@ button {
   z-index: 0;
   object-fit: contain;
   object-position: center;
+}
+
+.scene-links {
+  position: absolute;
+  z-index: 3;
+  left: var(--scene-content-left);
+  top: var(--scene-content-top);
+  width: var(--scene-content-width);
+  height: var(--scene-content-height);
+  pointer-events: none;
+}
+
+.scene-hotspot {
+  position: absolute;
+  display: block;
+  border-radius: 999px;
+  pointer-events: auto;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.scene-hotspot:focus-visible {
+  outline: 2px solid rgba(255, 229, 107, 0.95);
+  outline-offset: 4px;
+  background: rgba(255, 229, 107, 0.12);
+}
+
+.scene-hotspot:hover {
+  background: rgba(255, 229, 107, 0.08);
+}
+
+.taiko-hotspot {
+  left: 56.2%;
+  top: 82.4%;
+  width: 14.6%;
+  height: 6.2%;
+}
+
+.steam-hotspot {
+  left: 70.8%;
+  top: 82.4%;
+  width: 8.2%;
+  height: 6.2%;
 }
 
 .scene-vignette {
