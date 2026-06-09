@@ -22,50 +22,53 @@ const dragState = {
   frame: 0,
 };
 
-const sceneSafePadding = 56;
-const maxDrag = 42;
-const dragScale = 0.3;
+const sceneOverscan = 76;
+const maxDrag = 80;
+const dragScale = 0.36;
+const artFocus = {
+  logo: { x: 0, y: 0 },
+  soon: { x: 1.09, y: 1 },
+};
 
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
 
-function getSceneContentBox(containerWidth, containerHeight, imageWidth, imageHeight) {
-  const scale = containerWidth / imageWidth;
-  const width = containerWidth;
+function getCoverBox(containerWidth, containerHeight, imageWidth, imageHeight, options = {}) {
+  const overscan = options.overscan || 0;
+  const scale = Math.max(
+    (containerWidth + overscan * 2) / imageWidth,
+    (containerHeight + overscan * 2) / imageHeight,
+  );
+  const width = imageWidth * scale;
   const height = imageHeight * scale;
+  const focusX = options.focusX ?? 0.5;
+  const focusY = options.focusY ?? 0.5;
 
   return {
-    left: 0,
-    top: (containerHeight - height) / 2,
+    left: (containerWidth - width) * focusX,
+    top: (containerHeight - height) * focusY,
     width,
     height,
   };
 }
 
-function applySceneSafePadding() {
-  floatingLayers.forEach((layer) => {
-    layer.style.inset = `${-sceneSafePadding}px`;
-    layer.style.width = `calc(100% + ${sceneSafePadding * 2}px)`;
-    layer.style.height = `calc(100% + ${sceneSafePadding * 2}px)`;
-    layer.style.maxWidth = "none";
-    layer.style.maxHeight = "none";
-    layer.style.objectFit = "cover";
-    layer.style.objectPosition = "center";
-  });
-}
-
-function updateHotspots(sceneBox) {
+function updateHotspots(shellRect, imageWidth, imageHeight) {
   hotspots.forEach((hotspot) => {
+    const focus = artFocus[hotspot.dataset.hotspotArt] || { x: 0.5, y: 0.5 };
+    const artBox = getCoverBox(shellRect.width, shellRect.height, imageWidth, imageHeight, {
+      focusX: focus.x,
+      focusY: focus.y,
+    });
     const left = Number(hotspot.dataset.hotspotLeft) || 0;
     const top = Number(hotspot.dataset.hotspotTop) || 0;
     const width = Number(hotspot.dataset.hotspotWidth) || 0;
     const height = Number(hotspot.dataset.hotspotHeight) || 0;
 
-    hotspot.style.setProperty("--scene-hotspot-left", `${sceneBox.left + sceneBox.width * left / 100}px`);
-    hotspot.style.setProperty("--scene-hotspot-top", `${sceneBox.top + sceneBox.height * top / 100}px`);
-    hotspot.style.setProperty("--scene-hotspot-width", `${sceneBox.width * width / 100}px`);
-    hotspot.style.setProperty("--scene-hotspot-height", `${sceneBox.height * height / 100}px`);
+    hotspot.style.setProperty("--scene-hotspot-left", `${artBox.left + artBox.width * left / 100}px`);
+    hotspot.style.setProperty("--scene-hotspot-top", `${artBox.top + artBox.height * top / 100}px`);
+    hotspot.style.setProperty("--scene-hotspot-width", `${artBox.width * width / 100}px`);
+    hotspot.style.setProperty("--scene-hotspot-height", `${artBox.height * height / 100}px`);
   });
 }
 
@@ -98,19 +101,19 @@ function updateSceneContentBox() {
   }
 
   const shellRect = sceneShell.getBoundingClientRect();
-  const sceneBox = getSceneContentBox(
+  const sceneBox = getCoverBox(
     shellRect.width,
     shellRect.height,
     sceneMeasure.naturalWidth,
     sceneMeasure.naturalHeight,
+    { overscan: sceneOverscan },
   );
 
   sceneShell.style.setProperty("--scene-content-left", `${sceneBox.left}px`);
   sceneShell.style.setProperty("--scene-content-top", `${sceneBox.top}px`);
   sceneShell.style.setProperty("--scene-content-width", `${sceneBox.width}px`);
   sceneShell.style.setProperty("--scene-content-height", `${sceneBox.height}px`);
-  applySceneSafePadding();
-  updateHotspots(sceneBox);
+  updateHotspots(shellRect, sceneMeasure.naturalWidth, sceneMeasure.naturalHeight);
 }
 
 function applyLayerMotion() {
@@ -259,5 +262,4 @@ window.addEventListener("orientationchange", updateSceneContentBox);
 const requestedLanguage = new URLSearchParams(window.location.search).get("lang");
 setLanguage(requestedLanguage || localStorage.getItem("zk-website-language") || "zh");
 updateSceneContentBox();
-applySceneSafePadding();
 applyLayerMotion();
