@@ -22,7 +22,8 @@ const dragState = {
   frame: 0,
 };
 
-const sceneOverscan = 76;
+const sceneMaxVerticalCrop = 32;
+const sceneMaxVerticalCropRatio = 0.04;
 const maxDrag = 80;
 const dragScale = 0.36;
 const artFocus = {
@@ -48,6 +49,26 @@ function getCoverBox(containerWidth, containerHeight, imageWidth, imageHeight, o
   return {
     left: (containerWidth - width) * focusX,
     top: (containerHeight - height) * focusY,
+    width,
+    height,
+  };
+}
+
+function getSceneContentBox(containerWidth, containerHeight, imageWidth, imageHeight) {
+  const containScale = Math.min(containerWidth / imageWidth, containerHeight / imageHeight);
+  const widthFitScale = containerWidth / imageWidth;
+  const verticalCropAllowance = Math.min(
+    sceneMaxVerticalCrop,
+    containerHeight * sceneMaxVerticalCropRatio,
+  );
+  const verticalCropLimitScale = (containerHeight + verticalCropAllowance * 2) / imageHeight;
+  const scale = Math.max(containScale, Math.min(widthFitScale, verticalCropLimitScale));
+  const width = imageWidth * scale;
+  const height = imageHeight * scale;
+
+  return {
+    left: (containerWidth - width) / 2,
+    top: (containerHeight - height) / 2,
     width,
     height,
   };
@@ -101,12 +122,11 @@ function updateSceneContentBox() {
   }
 
   const shellRect = sceneShell.getBoundingClientRect();
-  const sceneBox = getCoverBox(
+  const sceneBox = getSceneContentBox(
     shellRect.width,
     shellRect.height,
     sceneMeasure.naturalWidth,
     sceneMeasure.naturalHeight,
-    { overscan: sceneOverscan },
   );
 
   sceneShell.style.setProperty("--scene-content-left", `${sceneBox.left}px`);
