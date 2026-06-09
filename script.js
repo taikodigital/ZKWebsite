@@ -22,74 +22,37 @@ const dragState = {
   frame: 0,
 };
 
-const sceneMaxVerticalCrop = 32;
-const sceneMaxVerticalCropRatio = 0.04;
-const maxDrag = 80;
-const dragScale = 0.36;
-const artFocus = {
-  logo: { x: 0, y: 0 },
-  soon: { x: 1.09, y: 1 },
-};
+const maxDrag = 42;
+const dragScale = 0.3;
 
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
 
-function getCoverBox(containerWidth, containerHeight, imageWidth, imageHeight, options = {}) {
-  const overscan = options.overscan || 0;
-  const scale = Math.max(
-    (containerWidth + overscan * 2) / imageWidth,
-    (containerHeight + overscan * 2) / imageHeight,
-  );
-  const width = imageWidth * scale;
-  const height = imageHeight * scale;
-  const focusX = options.focusX ?? 0.5;
-  const focusY = options.focusY ?? 0.5;
-
-  return {
-    left: (containerWidth - width) * focusX,
-    top: (containerHeight - height) * focusY,
-    width,
-    height,
-  };
-}
-
 function getSceneContentBox(containerWidth, containerHeight, imageWidth, imageHeight) {
-  const containScale = Math.min(containerWidth / imageWidth, containerHeight / imageHeight);
-  const widthFitScale = containerWidth / imageWidth;
-  const verticalCropAllowance = Math.min(
-    sceneMaxVerticalCrop,
-    containerHeight * sceneMaxVerticalCropRatio,
-  );
-  const verticalCropLimitScale = (containerHeight + verticalCropAllowance * 2) / imageHeight;
-  const scale = Math.max(containScale, Math.min(widthFitScale, verticalCropLimitScale));
-  const width = imageWidth * scale;
+  const scale = containerWidth / imageWidth;
+  const width = containerWidth;
   const height = imageHeight * scale;
 
   return {
-    left: (containerWidth - width) / 2,
+    left: 0,
     top: (containerHeight - height) / 2,
     width,
     height,
   };
 }
 
-function updateHotspots(shellRect, imageWidth, imageHeight) {
+function updateHotspots(sceneBox) {
   hotspots.forEach((hotspot) => {
-    const focus = artFocus[hotspot.dataset.hotspotArt] || { x: 0.5, y: 0.5 };
-    const artBox = getCoverBox(shellRect.width, shellRect.height, imageWidth, imageHeight, {
-      focusX: focus.x,
-      focusY: focus.y,
-    });
     const left = Number(hotspot.dataset.hotspotLeft) || 0;
     const top = Number(hotspot.dataset.hotspotTop) || 0;
     const width = Number(hotspot.dataset.hotspotWidth) || 0;
     const height = Number(hotspot.dataset.hotspotHeight) || 0;
 
-    hotspot.style.setProperty("--scene-hotspot-left", `${artBox.left + artBox.width * left / 100}px`);
-    hotspot.style.setProperty("--scene-hotspot-top", `${artBox.top + artBox.height * top / 100}px`);
-    hotspot.style.setProperty("--scene-hotspot-width", `${artBox.width * width / 100}px`);
-    hotspot.style.setProperty("--scene-hotspot-height", `${artBox.height * height / 100}px`);
+    hotspot.style.setProperty("--scene-hotspot-left", `${sceneBox.left + sceneBox.width * left / 100}px`);
+    hotspot.style.setProperty("--scene-hotspot-top", `${sceneBox.top + sceneBox.height * top / 100}px`);
+    hotspot.style.setProperty("--scene-hotspot-width", `${sceneBox.width * width / 100}px`);
+    hotspot.style.setProperty("--scene-hotspot-height", `${sceneBox.height * height / 100}px`);
   });
 }
 
@@ -133,7 +96,7 @@ function updateSceneContentBox() {
   sceneShell.style.setProperty("--scene-content-top", `${sceneBox.top}px`);
   sceneShell.style.setProperty("--scene-content-width", `${sceneBox.width}px`);
   sceneShell.style.setProperty("--scene-content-height", `${sceneBox.height}px`);
-  updateHotspots(shellRect, sceneMeasure.naturalWidth, sceneMeasure.naturalHeight);
+  updateHotspots(sceneBox);
 }
 
 function applyLayerMotion() {
