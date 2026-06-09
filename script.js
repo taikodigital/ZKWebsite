@@ -22,6 +22,7 @@ const dragState = {
   frame: 0,
 };
 
+const sceneSafePadding = 56;
 const maxDrag = 42;
 const dragScale = 0.3;
 
@@ -40,6 +41,18 @@ function getSceneContentBox(containerWidth, containerHeight, imageWidth, imageHe
     width,
     height,
   };
+}
+
+function applySceneSafePadding() {
+  floatingLayers.forEach((layer) => {
+    layer.style.inset = `${-sceneSafePadding}px`;
+    layer.style.width = `calc(100% + ${sceneSafePadding * 2}px)`;
+    layer.style.height = `calc(100% + ${sceneSafePadding * 2}px)`;
+    layer.style.maxWidth = "none";
+    layer.style.maxHeight = "none";
+    layer.style.objectFit = "cover";
+    layer.style.objectPosition = "center";
+  });
 }
 
 function updateHotspots(sceneBox) {
@@ -96,6 +109,7 @@ function updateSceneContentBox() {
   sceneShell.style.setProperty("--scene-content-top", `${sceneBox.top}px`);
   sceneShell.style.setProperty("--scene-content-width", `${sceneBox.width}px`);
   sceneShell.style.setProperty("--scene-content-height", `${sceneBox.height}px`);
+  applySceneSafePadding();
   updateHotspots(sceneBox);
 }
 
@@ -245,4 +259,5 @@ window.addEventListener("orientationchange", updateSceneContentBox);
 const requestedLanguage = new URLSearchParams(window.location.search).get("lang");
 setLanguage(requestedLanguage || localStorage.getItem("zk-website-language") || "zh");
 updateSceneContentBox();
+applySceneSafePadding();
 applyLayerMotion();
