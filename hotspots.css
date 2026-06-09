@@ -3,15 +3,22 @@
 }
 
 .steam-hotspot {
-  left: 80.0%;
-  top: 90.2%;
-  width: 8.4%;
-  height: 5.0%;
+  --scene-hotspot-left: 80.3%;
+  --scene-hotspot-top: 91.5%;
+  --scene-hotspot-width: 8.7%;
+  --scene-hotspot-height: 4.9%;
 }
 
 .taiko-hotspot {
-  left: 89.0%;
-  top: 90.2%;
-  width: 8.3%;
-  height: 5.0%;
+  --scene-hotspot-left: 90%;
+  --scene-hotspot-top: 91.5%;
+  --scene-hotspot-width: 8.3%;
+  --scene-hotspot-height: 4.9%;
+}
+
+.logo-hotspot {
+  --scene-hotspot-left: 3.2%;
+  --scene-hotspot-top: 9.4%;
+  --scene-hotspot-width: 47.8%;
+  --scene-hotspot-height: 42.4%;
 }

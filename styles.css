@@ -8,6 +8,10 @@
   --scene-content-top: 0px;
   --scene-content-width: 100%;
   --scene-content-height: 100%;
+  --scene-hotspot-left: 0px;
+  --scene-hotspot-top: 0px;
+  --scene-hotspot-width: 0px;
+  --scene-hotspot-height: 0px;
 }
 
 * {
@@ -68,14 +72,14 @@ button {
   position: absolute;
   z-index: -1;
   inset: -32px;
-  background: url("./assets/20260423_website_mockup_bg.png") center / cover no-repeat;
+  background: url("./assets/BG.png") center / cover no-repeat;
   filter: blur(18px) saturate(1.08);
   opacity: 0.48;
   transform: scale(1.04);
   pointer-events: none;
 }
 
-.scene-bg,
+.scene-stage,
 .scene-vignette,
 .title-layer,
 .language-art {
@@ -85,26 +89,159 @@ button {
   height: 100%;
 }
 
-.scene-bg {
+.scene-stage {
   z-index: 0;
-  object-fit: contain;
+  left: var(--scene-content-left);
+  top: var(--scene-content-top);
+  right: auto;
+  bottom: auto;
+  width: var(--scene-content-width);
+  height: var(--scene-content-height);
+  cursor: grab;
+  overflow: visible;
+  pointer-events: auto;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.scene-stage.is-dragging {
+  cursor: grabbing;
+}
+
+.scene-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  object-fit: cover;
   object-position: center;
   pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  --parallax-x: 0px;
+  --parallax-y: 0px;
+  --float-x: 0px;
+  --float-y: 0px;
+  --float-x-alt: 0px;
+  --float-y-alt: 0px;
+  --float-scale: 1;
+  --float-rotate: 0deg;
+  --float-rotate-alt: 0deg;
+  animation: sceneLayerFloat var(--float-duration, 9s) ease-in-out infinite;
+  animation-delay: var(--float-delay, 0s);
+  transform:
+    translate3d(var(--parallax-x), var(--parallax-y), 0)
+    scale(1)
+    rotate(0deg);
+  will-change: transform;
+}
+
+.scene-layer-base {
+  z-index: 0;
+  --float-x: -8px;
+  --float-y: 6px;
+  --float-x-alt: 3px;
+  --float-y-alt: -2px;
+  --float-scale: 1.008;
+  --float-duration: 14s;
+}
+
+.scene-layer-rune {
+  z-index: 1;
+  opacity: 0.82;
+  --float-x: 10px;
+  --float-y: -8px;
+  --float-x-alt: -4px;
+  --float-y-alt: 3px;
+  --float-scale: 1.012;
+  --float-rotate: 0.24deg;
+  --float-rotate-alt: -0.1deg;
+  --float-duration: 16s;
+  --float-delay: -4s;
+}
+
+.scene-layer-haze {
+  z-index: 2;
+  opacity: 0.84;
+  --float-x: -10px;
+  --float-y: -5px;
+  --float-x-alt: 4px;
+  --float-y-alt: 2px;
+  --float-scale: 1.01;
+  --float-duration: 13s;
+  --float-delay: -2s;
+}
+
+.scene-layer-background {
+  z-index: 3;
+  --float-x: 7px;
+  --float-y: -10px;
+  --float-x-alt: -3px;
+  --float-y-alt: 4px;
+  --float-scale: 1.006;
+  --float-rotate: -0.16deg;
+  --float-rotate-alt: 0.07deg;
+  --float-duration: 12s;
+}
+
+.scene-layer-midground {
+  z-index: 4;
+  --float-x: -12px;
+  --float-y: 8px;
+  --float-x-alt: 5px;
+  --float-y-alt: -3px;
+  --float-scale: 1.008;
+  --float-rotate: 0.18deg;
+  --float-rotate-alt: -0.08deg;
+  --float-duration: 10.8s;
+  --float-delay: -1.7s;
+}
+
+.scene-layer-zhongkui {
+  z-index: 5;
+  --float-x: 12px;
+  --float-y: -9px;
+  --float-x-alt: -5px;
+  --float-y-alt: 4px;
+  --float-scale: 1.01;
+  --float-rotate: -0.18deg;
+  --float-rotate-alt: 0.08deg;
+  --float-duration: 9.6s;
+  --float-delay: -3s;
+}
+
+.scene-layer-foreground {
+  z-index: 6;
+  --float-x: -15px;
+  --float-y: 10px;
+  --float-x-alt: 6px;
+  --float-y-alt: -4px;
+  --float-scale: 1.014;
+  --float-rotate: 0.2deg;
+  --float-rotate-alt: -0.09deg;
+  --float-duration: 8.8s;
+  --float-delay: -1s;
 }
 
 .scene-links {
   position: absolute;
-  z-index: 10;
-  left: var(--scene-content-left);
-  top: var(--scene-content-top);
-  width: var(--scene-content-width);
-  height: var(--scene-content-height);
+  z-index: 11;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
 }
 
 .scene-hotspot {
   position: absolute;
   display: block;
+  left: var(--scene-hotspot-left);
+  top: var(--scene-hotspot-top);
+  width: var(--scene-hotspot-width);
+  height: var(--scene-hotspot-height);
   border-radius: 999px;
   pointer-events: auto;
   cursor: pointer;
@@ -116,7 +253,7 @@ button {
 .scene-hotspot::after {
   content: "";
   position: absolute;
-  inset: -12px;
+  inset: 0;
   border-radius: inherit;
 }
 
@@ -131,27 +268,39 @@ button {
 }
 
 .taiko-hotspot {
-  left: 55.2%;
-  top: 80.8%;
-  width: 16.8%;
-  height: 9.2%;
+  --scene-hotspot-left: 90%;
+  --scene-hotspot-top: 91.5%;
+  --scene-hotspot-width: 8.3%;
+  --scene-hotspot-height: 4.9%;
 }
 
 .steam-hotspot {
-  left: 68.6%;
-  top: 80.8%;
-  width: 11.4%;
-  height: 9.2%;
+  --scene-hotspot-left: 80.3%;
+  --scene-hotspot-top: 91.5%;
+  --scene-hotspot-width: 8.7%;
+  --scene-hotspot-height: 4.9%;
+}
+
+.logo-hotspot {
+  --scene-hotspot-left: 3.2%;
+  --scene-hotspot-top: 9.4%;
+  --scene-hotspot-width: 47.8%;
+  --scene-hotspot-height: 42.4%;
+  border-radius: 8px;
+}
+
+.logo-hotspot:hover {
+  background: transparent;
 }
 
 .scene-vignette {
-  z-index: 1;
+  z-index: 7;
   pointer-events: none;
 }
 
 .site-header {
   position: fixed;
-  z-index: 4;
+  z-index: 12;
   top: max(18px, env(safe-area-inset-top));
   left: max(18px, env(safe-area-inset-left));
   right: max(18px, env(safe-area-inset-right));
@@ -217,14 +366,14 @@ button {
 }
 
 .title-layer {
-  z-index: 2;
+  z-index: 8;
   pointer-events: none;
 }
 
 .language-art {
   max-width: 100%;
   max-height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   object-position: center;
   opacity: 0;
   transition: opacity 420ms ease;
@@ -235,6 +384,7 @@ button {
 }
 
 .logo-art {
+  object-position: left top;
   transform: translate3d(-1.2%, 1%, 0) scale(0.992) rotate(-0.28deg);
   transform-origin: center;
   filter:
@@ -257,12 +407,13 @@ button {
 }
 
 .soon-art {
+  object-position: 109% bottom;
   filter: drop-shadow(0 12px 28px rgba(0, 0, 0, 0.36));
 }
 
 .asset-warning {
   position: fixed;
-  z-index: 5;
+  z-index: 13;
   left: max(18px, env(safe-area-inset-left));
   bottom: max(18px, env(safe-area-inset-bottom));
   display: none;
@@ -280,6 +431,38 @@ button {
 
 .has-missing-assets .asset-warning {
   display: block;
+}
+
+@keyframes sceneLayerFloat {
+  0%,
+  100% {
+    transform:
+      translate3d(var(--parallax-x), var(--parallax-y), 0)
+      scale(1)
+      rotate(0deg);
+  }
+
+  43% {
+    transform:
+      translate3d(
+        calc(var(--parallax-x) + var(--float-x)),
+        calc(var(--parallax-y) + var(--float-y)),
+        0
+      )
+      scale(var(--float-scale))
+      rotate(var(--float-rotate));
+  }
+
+  73% {
+    transform:
+      translate3d(
+        calc(var(--parallax-x) + var(--float-x-alt)),
+        calc(var(--parallax-y) + var(--float-y-alt)),
+        0
+      )
+      scale(1.002)
+      rotate(var(--float-rotate-alt));
+  }
 }
 
 @keyframes logoFloat {
@@ -320,8 +503,7 @@ button {
     font-size: 13px;
   }
 
-  .scene-bg,
-  .language-art {
+  .scene-layer {
     object-position: center;
   }
 }
