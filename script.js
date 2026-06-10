@@ -7,6 +7,9 @@ const buttons = Array.from(document.querySelectorAll(".language-button"));
 const languageArt = Array.from(document.querySelectorAll(".language-art"));
 const requiredAssets = Array.from(document.querySelectorAll("[data-required-asset]"));
 const hotspots = Array.from(document.querySelectorAll("[data-hotspot-art]"));
+const socialMenu = document.querySelector("[data-social-menu]");
+const socialToggle = document.querySelector("[data-social-toggle]");
+const socialLinks = Array.from(document.querySelectorAll(".social-menu-link[href]"));
 
 const dragState = {
   active: false,
@@ -88,6 +91,15 @@ function setLanguage(language) {
   });
 
   localStorage.setItem("zk-website-language", nextLanguage);
+}
+
+function setSocialMenuOpen(isOpen) {
+  if (!socialMenu || !socialToggle) {
+    return;
+  }
+
+  socialMenu.classList.toggle("is-open", isOpen);
+  socialToggle.setAttribute("aria-expanded", String(isOpen));
 }
 
 function updateSceneContentBox() {
@@ -222,6 +234,33 @@ buttons.forEach((button) => {
     setLanguage(button.dataset.lang);
   });
 });
+
+if (socialMenu && socialToggle) {
+  socialToggle.addEventListener("click", (event) => {
+    const isOpen = socialToggle.getAttribute("aria-expanded") === "true";
+    setSocialMenuOpen(!isOpen);
+    event.stopPropagation();
+  });
+
+  socialLinks.forEach((link) => {
+    link.addEventListener("click", () => {
+      setSocialMenuOpen(false);
+    });
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!socialMenu.contains(event.target)) {
+      setSocialMenuOpen(false);
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && socialToggle.getAttribute("aria-expanded") === "true") {
+      setSocialMenuOpen(false);
+      socialToggle.focus();
+    }
+  });
+}
 
 requiredAssets.forEach((asset) => {
   asset.addEventListener(
