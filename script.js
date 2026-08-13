@@ -74,11 +74,37 @@ function fitHeroToImage() {
 }
 
 if (bg && hero && stage) {
-  if (bg.complete && bg.naturalWidth > 0) {
+  let initDone = false;
+  const init = () => {
+    if (initDone) return;
+    initDone = true;
     fitHeroToImage();
+
+    // ResizeObserver fires only after the stage size has fully settled,
+    // so we never read a mid-layout size (the bug that caused the title/
+    // button to lag behind the background while dragging the window).
+    if (typeof ResizeObserver !== "undefined") {
+      const ro = new ResizeObserver(() => fitHeroToImage());
+      ro.observe(stage);
+    } else {
+      // Older-browser fallback: defer to the next frame so layout is final.
+      let rafId = 0;
+      window.addEventListener("resize", () => {
+        cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(fitHeroToImage);
+      });
+    }
+
+    // Safety net for rotation/viewport changes that may not resize the stage
+    // synchronously (re-runs are harmless and cheap).
+    window.addEventListener("orientationchange", () =>
+      setTimeout(fitHeroToImage, 250),
+    );
+  };
+
+  if (bg.complete && bg.naturalWidth > 0) {
+    init();
   } else {
-    bg.addEventListener("load", fitHeroToImage, { once: true });
+    bg.addEventListener("load", init, { once: true });
   }
-  window.addEventListener("resize", fitHeroToImage);
-  window.addEventListener("orientationchange", fitHeroToImage);
 }
