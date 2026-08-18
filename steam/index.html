@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN" data-lang="zh" data-build="20260813-1937">
+<html lang="en" data-lang="en" data-build="20260813-1937">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -25,6 +25,13 @@
     />
     <link rel="stylesheet" href="./styles.css?v=20260813-1937" />
 
+    <!-- 默认隐藏警告 -->
+    <style>
+      .asset-warning {
+        display: none;
+      }
+    </style>
+
     <!-- Meta Pixel Code -->
     <script>
     !function(f,b,e,v,n,t,s)
@@ -49,11 +56,14 @@
         // 1. 检测浏览器语言
         const navLang = navigator.language || navigator.languages?.[0] || 'en';
         const targetLang = navLang.startsWith('zh') ? 'zh-CN' : 'en';
+
+        // 同步更新 lang 和 data-lang
+        document.documentElement.lang = targetLang === 'zh-CN' ? 'zh-CN' : 'en';
         document.documentElement.setAttribute('data-lang', targetLang === 'zh-CN' ? 'zh' : 'en');
 
         // 2. 加载对应的 JSON 翻译文件
         const langFile = targetLang === 'zh-CN' ? '/locales/zh-CN.json' : '/locales/en.json';
-        
+
         fetch(langFile)
           .then(res => {
             if (!res.ok) throw new Error('Failed to load language file');
@@ -61,12 +71,10 @@
           })
           .then(translations => {
             // 3. 用翻译内容填充页面元素
-            // 愿望单按钮文字
             const wishlistEl = document.querySelector('.wishlist-text');
             if (wishlistEl && translations.wishlist) {
               wishlistEl.textContent = translations.wishlist;
             }
-            // 底部声明文字
             const footerEl = document.querySelector('.footer-disclaimer p');
             if (footerEl && translations.footer_text) {
               footerEl.textContent = translations.footer_text;
@@ -104,8 +112,7 @@
 
         <a
           class="wishlist-button"
-          href="https://store.steampowered.com/app/4550140/beetle?utm_source=meta_ads"
-          target="_blank"
+          href="#"
           rel="noopener noreferrer"
           aria-label="Wishlist Flame Hunter Zhong Kui on Steam"
           onclick="fbq('track', 'Lead', {content_name: 'Steam_Button_Click'}); setTimeout(function(){ window.location.href='https://store.steampowered.com/app/4550140/beetle?utm_source=meta_ads'; }, 300); return false;"
@@ -120,12 +127,12 @@
         </a>
         <video height="154" autoplay loop muted playsinline preload="auto">
           <source src="/videos/landing_page.mp4" type="video/mp4">
-          您的浏览器不支持视频标签，请升级浏览器。
+          Your browser does not support the video tag. Please upgrade your browser.
         </video>
       </section>
 
       <p class="asset-warning" role="status">
-        素材文件暂未读取到，请把指定图片放入 assets 目录后刷新页面。
+        Asset files are not loaded. Please place the required images in the assets directory and refresh.
       </p>
     </main>
 
