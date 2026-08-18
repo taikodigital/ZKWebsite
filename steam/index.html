@@ -25,6 +25,19 @@
     />
     <link rel="stylesheet" href="./styles.css?v=20260813-1937" />
 
+    <!-- ===== 自动语言检测（根据浏览器语言设置 data-lang） ===== -->
+    <script>
+      (function() {
+        // 获取浏览器语言（支持 navigator.languages 回退）
+        const navLang = navigator.language || navigator.languages?.[0] || 'en';
+        // 如果语言以 'zh' 开头则设为 'zh'，否则设为 'en'
+        const targetLang = navLang.startsWith('zh') ? 'zh' : 'en';
+        // 设置 html 的 data-lang 属性，用于控制多语言显示
+        document.documentElement.setAttribute('data-lang', targetLang);
+      })();
+    </script>
+    <!-- ===== 自动语言检测结束 ===== -->
+
     <!-- Meta Pixel Code -->
     <script>
     !function(f,b,e,v,n,t,s)
@@ -63,7 +76,7 @@
 
         <a
           class="wishlist-button"
-          href="https://store.steampowered.com/app/4693180/Flame_Hunter_Zhong_Kui_Demo/?utm_source=meta_ads&utm_medium=cpc&utm_campaign=shapeshift_test"
+          href="https://store.steampowered.com/app/4550140/beetle?utm_source=meta_ads"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Wishlist Flame Hunter Zhong Kui on Steam"
@@ -85,22 +98,19 @@
         </video>
       </section>
 
-      <header class="site-header" aria-label="Site controls">
-        <div class="language-switch" role="group" aria-label="Language">
-          <button class="language-button is-active" type="button" data-lang="zh">
-            中
-          </button>
-          <button class="language-button" type="button" data-lang="en">EN</button>
-        </div>
-      </header>
-
       <p class="asset-warning" role="status">
         素材文件暂未读取到，请把指定图片放入 assets 目录后刷新页面。
       </p>
     </main>
+
+    <!-- ===== 底部声明（双语） ===== -->
     <div class="footer-disclaimer">
-        <p>We use the Meta Pixel for analytics and advertising optimization. Data is hashed and anonymized.</p>
+      <p>
+        <span class="localized-text" data-lang="zh">我们使用 Meta Pixel 进行数据分析和广告优化。数据已经过哈希和匿名化处理。</span>
+        <span class="localized-text" data-lang="en">We use the Meta Pixel for analytics and advertising optimization. Data is hashed and anonymized.</span>
+      </p>
     </div>
+
     <script src="../script.js?v=20260813-1937"></script>
   </body>
 </html>
