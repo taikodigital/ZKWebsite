@@ -36,6 +36,10 @@ button {
   font: inherit;
 }
 
+video {
+    margin-top: 50px;
+}
+
 /* ---------- Phone-ratio stage ----------
    The stage keeps a 9:20 (phone) portrait ratio. On wide screens its width
    is capped at 45dvh so the stage is exactly one viewport tall; the image
