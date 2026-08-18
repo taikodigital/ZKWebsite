@@ -1,5 +1,4 @@
 {
-  "title": "欢迎来到钟馗传",
-  "subtitle": "加入愿望单",
-  "footer_text": "We use the Meta Pixel for analytics and advertising optimization. Data is hashed and anonymized."
+  "wishlist": "加入愿望单",
+  "footer_text": "我们使用 Meta Pixel 进行数据分析和广告优化。数据已经过哈希和匿名化处理。"
 }
