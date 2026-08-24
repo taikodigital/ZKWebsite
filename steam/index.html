@@ -115,7 +115,10 @@
           href="#"
           rel="noopener noreferrer"
           aria-label="Wishlist Flame Hunter Zhong Kui on Steam"
-          onclick="fbq('track', 'Lead', {content_name: 'Steam_Button_Click'}); setTimeout(function(){ window.location.href='https://store.steampowered.com/app/4550140/beetle?utm_source=meta_ads'; }, 300); return false;"
+          onclick="fbq('track', 'Lead', {content_name: 'Steam_Button_Click'}); setTimeout(function(){ 
+              var params = window.location.search; 
+              window.location.href='https://store.steampowered.com/app/4550140/beetle' + params; 
+          }, 300); return false;"
         >
           <img
             class="wishlist-bg"
