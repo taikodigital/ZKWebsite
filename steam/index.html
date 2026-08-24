@@ -53,31 +53,79 @@
     <!-- ===== 自动语言检测 + 加载 JSON 翻译 ===== -->
     <script>
       (function() {
-        // 1. 检测浏览器语言
-        const navLang = navigator.language || navigator.languages?.[0] || 'en';
-        const targetLang = navLang.startsWith('zh') ? 'zh-CN' : 'en';
+        // 1. 获取浏览器语言列表（按优先级排序）
+        const browserLanguages = navigator.languages || [navigator.language || 'en'];
+        
+        // 2. 定义支持的语言映射：浏览器语言代码 → 我们的语言文件夹名
+        //    按优先级从高到低排列（越靠前越优先匹配）
+        const langMap = [
+          { match: 'zh-TW', folder: 'zh-TW' },     // 台湾繁体中文
+          { match: 'zh-HK', folder: 'zh-HK' },     // 香港繁体中文
+          { match: 'zh-CN', folder: 'zh-CN' },     // 简体中文
+          { match: 'zh', folder: 'zh-CN' },        // 中文默认回退到简体
+          { match: 'ko', folder: 'ko' },           // 韩语
+          { match: 'ja', folder: 'ja' },           // 日语
+          { match: 'pl', folder: 'pl' },           // 波兰语
+          { match: 'pt-BR', folder: 'pt-BR' },     // 巴西葡萄牙语
+          { match: 'pt', folder: 'pt-BR' },        // 葡萄牙语默认回退到巴西
+          { match: 'es-MX', folder: 'es-MX' },     // 墨西哥西班牙语
+          { match: 'es-ES', folder: 'es-ES' },     // 西班牙西班牙语
+          { match: 'es', folder: 'es-ES' },        // 西班牙语默认回退到西班牙
+          { match: 'tr', folder: 'tr' },           // 土耳其语
+          { match: 'id', folder: 'id' },           // 印尼语
+          { match: 'tl', folder: 'tl' },           // 他加禄语（菲律宾）
+          { match: 'fil', folder: 'tl' },          // 菲律宾语回退到他加禄语
+          { match: 'ro', folder: 'ro' },           // 罗马尼亚语
+          // 英语相关：新加坡英语、其他英语都回退到 en
+          { match: 'en-SG', folder: 'en' },
+          { match: 'en', folder: 'en' },
+        ];
 
-        // 同步更新 lang 和 data-lang
-        document.documentElement.lang = targetLang === 'zh-CN' ? 'zh-CN' : 'en';
-        document.documentElement.setAttribute('data-lang', targetLang === 'zh-CN' ? 'zh' : 'en');
+        // 3. 匹配最佳语言
+        let targetLang = 'en'; // 默认英语
+        for (const browserLang of browserLanguages) {
+          // 标准化：取前两个字符作为主要语言代码
+          const primaryLang = browserLang.split('-')[0].toLowerCase();
+          
+          for (const map of langMap) {
+            // 精确匹配（如 zh-TW）或前缀匹配（如 zh 匹配 zh-CN）
+            if (browserLang === map.match || primaryLang === map.match.split('-')[0]) {
+              targetLang = map.folder;
+              break;
+            }
+          }
+          if (targetLang !== 'en') break; // 找到匹配就停止
+        }
 
-        // 2. 加载对应的 JSON 翻译文件
-        const langFile = targetLang === 'zh-CN' ? '/locales/zh-CN.json' : '/locales/en.json';
+        // 4. 设置 html 的 data-lang 属性（用于 CSS 样式，如果有需要）
+        const langAttr = targetLang === 'zh-CN' ? 'zh' : 
+                         targetLang === 'zh-TW' || targetLang === 'zh-HK' ? 'zh' :
+                         targetLang;
+        document.documentElement.setAttribute('data-lang', langAttr);
 
+        // 5. 加载对应的 JSON 翻译文件
+        const langFile = '/locales/' + targetLang + '.json';
+        
         fetch(langFile)
           .then(res => {
-            if (!res.ok) throw new Error('Failed to load language file');
+            if (!res.ok) throw new Error('Failed to load language file: ' + langFile);
             return res.json();
           })
           .then(translations => {
-            // 3. 用翻译内容填充页面元素
+            // 6. 用翻译内容填充页面元素
+            // 愿望单按钮文字
             const wishlistEl = document.querySelector('.wishlist-text');
             if (wishlistEl && translations.wishlist) {
               wishlistEl.textContent = translations.wishlist;
             }
+            // 底部声明文字
             const footerEl = document.querySelector('.footer-disclaimer p');
             if (footerEl && translations.footer_text) {
               footerEl.textContent = translations.footer_text;
+            }
+            // 如果有页面标题
+            if (translations.page_title) {
+              document.title = translations.page_title;
             }
           })
           .catch(err => {
