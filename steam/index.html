@@ -56,48 +56,56 @@
         // 1. 获取浏览器语言列表（按优先级排序）
         const browserLanguages = navigator.languages || [navigator.language || 'en'];
         
-        // 2. 定义支持的语言映射：浏览器语言代码 → 我们的语言文件夹名
-        //    按优先级从高到低排列（越靠前越优先匹配）
-        const langMap = [
-          { match: 'zh-TW', folder: 'zh-TW' },     // 台湾繁体中文
-          { match: 'zh-HK', folder: 'zh-HK' },     // 香港繁体中文
-          { match: 'zh-CN', folder: 'zh-CN' },     // 简体中文
-          { match: 'zh', folder: 'zh-CN' },        // 中文默认回退到简体
-          { match: 'ko', folder: 'ko' },           // 韩语
-          { match: 'ja', folder: 'ja' },           // 日语
-          { match: 'pl', folder: 'pl' },           // 波兰语
-          { match: 'pt-BR', folder: 'pt-BR' },     // 巴西葡萄牙语
-          { match: 'pt', folder: 'pt-BR' },        // 葡萄牙语默认回退到巴西
-          { match: 'es-MX', folder: 'es-MX' },     // 墨西哥西班牙语
-          { match: 'es-ES', folder: 'es-ES' },     // 西班牙西班牙语
-          { match: 'es', folder: 'es-ES' },        // 西班牙语默认回退到西班牙
-          { match: 'tr', folder: 'tr' },           // 土耳其语
-          { match: 'id', folder: 'id' },           // 印尼语
-          { match: 'tl', folder: 'tl' },           // 他加禄语（菲律宾）
-          { match: 'fil', folder: 'tl' },          // 菲律宾语回退到他加禄语
-          { match: 'ro', folder: 'ro' },           // 罗马尼亚语
-          // 英语相关：新加坡英语、其他英语都回退到 en
-          { match: 'en-SG', folder: 'en' },
-          { match: 'en', folder: 'en' },
-        ];
+        // 2. 定义精确匹配映射：浏览器语言代码 → 我们的语言文件夹名
+        const exactMatchMap = {
+          'zh-TW': 'zh-TW',
+          'zh-HK': 'zh-HK',
+          'zh-CN': 'zh-CN',
+          'zh': 'zh-CN',           // 未指定地区的中文 → 简体
+          'ko': 'ko',
+          'ja': 'ja',
+          'pl': 'pl',
+          'pt-BR': 'pt-BR',
+          'pt': 'pt-BR',           // 未指定地区的葡萄牙语 → 巴西
+          'es-MX': 'es-MX',
+          'es-ES': 'es-ES',
+          'es': 'es-ES',           // 未指定地区的西班牙语 → 西班牙
+          'tr': 'tr',
+          'id': 'id',
+          'tl': 'tl',
+          'fil': 'tl',             // 菲律宾语 → 他加禄语
+          'ro': 'ro',
+          'en-SG': 'en',
+          'en': 'en',
+        };
 
         // 3. 匹配最佳语言
-        let targetLang = 'en'; // 默认英语
+        let targetLang = 'en'; // 默认英语（兜底）
+        
         for (const browserLang of browserLanguages) {
-          // 标准化：取前两个字符作为主要语言代码
+          // 提取主要语言代码（如 'zh-TW' → 'zh'）
           const primaryLang = browserLang.split('-')[0].toLowerCase();
           
-          for (const map of langMap) {
-            // 精确匹配（如 zh-TW）或前缀匹配（如 zh 匹配 zh-CN）
-            if (browserLang === map.match || primaryLang === map.match.split('-')[0]) {
-              targetLang = map.folder;
-              break;
-            }
+          // 先尝试精确匹配
+          if (exactMatchMap[browserLang]) {
+            targetLang = exactMatchMap[browserLang];
+            break;
           }
-          if (targetLang !== 'en') break; // 找到匹配就停止
+          
+          // 再尝试主要语言匹配
+          if (exactMatchMap[primaryLang]) {
+            targetLang = exactMatchMap[primaryLang];
+            break;
+          }
+          
+          // 如果浏览器语言是 'en-US' 但不在 map 中，直接设置为 en
+          if (primaryLang === 'en') {
+            targetLang = 'en';
+            break;
+          }
         }
 
-        // 4. 设置 html 的 data-lang 属性（用于 CSS 样式，如果有需要）
+        // 4. 设置 html 的 data-lang 属性
         const langAttr = targetLang === 'zh-CN' ? 'zh' : 
                          targetLang === 'zh-TW' || targetLang === 'zh-HK' ? 'zh' :
                          targetLang;
@@ -108,29 +116,25 @@
         
         fetch(langFile)
           .then(res => {
-            if (!res.ok) throw new Error('Failed to load language file: ' + langFile);
+            if (!res.ok) throw new Error('Failed to load: ' + langFile);
             return res.json();
           })
           .then(translations => {
-            // 6. 用翻译内容填充页面元素
-            // 愿望单按钮文字
             const wishlistEl = document.querySelector('.wishlist-text');
             if (wishlistEl && translations.wishlist) {
               wishlistEl.textContent = translations.wishlist;
             }
-            // 底部声明文字
             const footerEl = document.querySelector('.footer-disclaimer p');
             if (footerEl && translations.footer_text) {
               footerEl.textContent = translations.footer_text;
             }
-            // 如果有页面标题
             if (translations.page_title) {
               document.title = translations.page_title;
             }
           })
           .catch(err => {
-            console.warn('Language file load failed, using fallback:', err);
-            // 降级方案：如果加载失败，使用硬编码默认值（英文）
+            console.warn('Language file load failed:', err);
+            // 降级方案：使用英文硬编码
             const wishlistEl = document.querySelector('.wishlist-text');
             if (wishlistEl) wishlistEl.textContent = 'WISHLIST NOW';
             const footerEl = document.querySelector('.footer-disclaimer p');

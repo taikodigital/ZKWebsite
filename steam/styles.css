@@ -168,7 +168,7 @@ video {
   width: 92%;
   text-align: center;
   white-space: nowrap;
-  font-size: 18px;
+  font-size: clamp(12px, 2.5vw, 20px);  /* 最小12px，优选2.5vw，最大20px */
   font-weight: 900;
   letter-spacing: 0.14em;
   color: #ffe56b;
