@@ -4,6 +4,14 @@
   --control-border: rgba(255, 230, 142, 0.28);
   --control-active: #ffd21f;
   --control-text: #f8f1d7;
+  --scene-content-left: 0px;
+  --scene-content-top: 0px;
+  --scene-content-width: 100%;
+  --scene-content-height: 100%;
+  --scene-hotspot-left: 0px;
+  --scene-hotspot-top: 0px;
+  --scene-hotspot-width: 0px;
+  --scene-hotspot-height: 0px;
 }
 
 * {
@@ -22,7 +30,7 @@ body {
   min-height: 100svh;
   overflow-x: hidden;
   overflow-y: auto;
-  background: #000;
+  background: #07090c;
   color: var(--control-text);
   font-family:
     Inter,
@@ -36,29 +44,16 @@ button {
   font: inherit;
 }
 
-video {
-    margin-top: 25px;
-}
-
-/* ---------- Phone-ratio stage ----------
-   The stage keeps a 9:20 (phone) portrait ratio. On wide screens its width
-   is capped at 45dvh so the stage is exactly one viewport tall; the image
-   scales up uniformly with it. On narrow screens it fills the width and the
-   height follows the image ratio, so the page can scroll. */
-
 .site-shell {
   position: relative;
-  width: min(100vw, 45vh);
-  width: min(100vw, 45dvh);
+  width: 100%;
   min-height: 100svh;
-  aspect-ratio: 9 / 20;
-  margin-inline: auto;
+  height: 100svh;
   overflow: hidden;
   isolation: isolate;
-  background: #07090c;
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.05),
-    0 40px 90px rgba(0, 0, 0, 0.55);
+  background:
+    radial-gradient(circle at 72% 36%, rgba(61, 201, 229, 0.28), transparent 34%),
+    linear-gradient(110deg, #251f27 0%, #2b3944 48%, #071018 100%);
 }
 
 @supports (height: 100dvh) {
@@ -66,65 +61,96 @@ video {
   .site-shell {
     min-height: 100dvh;
   }
+
+  .site-shell {
+    height: 100dvh;
+  }
+}
+
+.site-shell::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -32px;
+  background: url("./assets/background.jpg") center / cover no-repeat;
+  filter: blur(18px) saturate(1.08);
+  opacity: 0.48;
+  transform: scale(1.04);
+  pointer-events: none;
 }
 
 /* ---------- Background ---------- */
 
-.scene-bg {
-  position: absolute;
+.scene-layer {
   z-index: 0;
+  position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  max-width: none;
+  max-height: none;
+  object-fit: cover;
   object-position: center;
   pointer-events: none;
   user-select: none;
   -webkit-user-drag: none;
+  --parallax-x: 0px;
+  --parallax-y: 0px;
+  --float-x: -8px;
+  --float-y: 6px;
+  --float-x-alt: 3px;
+  --float-y-alt: -2px;
+  --float-scale: 1.008;
+  --float-duration: 14s;
+  --float-rotate: 0deg;
+  --float-rotate-alt: 0deg;
+  will-change: transform;
 }
 
-.footer-disclaimer {
-    text-align: center;           /* 文字居中 */
-    font-size: 12px;              /* 小号字体 */
-    color: #888;                  /* 灰色，不那么显眼 */
-    padding: 20px 10px;           /* 上下内边距20px，左右10px */
-    border-top: 1px solid #eee;   /* 可选：顶部加一条浅色分割线 */
-    margin-top: 40px;             /* 与上方内容保持距离 */
-    font-family: Arial, sans-serif; /* 字体 */
-    line-height: 1.5;             /* 行高，让文字不拥挤 */
-}
-
-/* ---------- Hero content ----------
-   Designed at a fixed 390x866.7 (logical px) base; script.js scales the
-   whole layer uniformly to the actual image area, so every element
-   (title, button, text, spacing) grows together in proportion. */
-
-.hero-content {
-  position: absolute;
-  z-index: 1;
-  left: 0;
-  top: 0;
-  width: 390px;
-  height: 866.7px;
+.action-buttons {
   display: flex;
-  flex-direction: column;
+  flex-direction: column;   /* 竖排 */
   align-items: center;
-  justify-content: flex-start;
-  padding: calc(40px + env(safe-area-inset-top)) 20px 0;
-  transform-origin: top left;
+  gap: 12px;                /* 按钮之间的间距 */
+  margin-top: 16px;
+  width: 100%;
+  max-width: 265px;
 }
 
-.game-title {
-  width: 300px;
-  max-width: 100%;
-  height: auto;
-  pointer-events: none;
-  user-select: none;
-  -webkit-user-drag: none;
-  filter: drop-shadow(0 12px 28px rgba(0, 0, 0, 0.5));
+.action-button {
+  width: 100%;
+  padding: 10px 20px;
+  border: 2px solid rgba(255, 230, 142, 0.4);
+  border-radius: 30px;
+  background: rgba(7, 10, 14, 0.7);
+  color: #f8f1d7;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: all 180ms ease;
+  backdrop-filter: blur(4px);
+  text-align: center;
+  white-space: nowrap;
 }
 
-.wishlist-button {
+.action-button:hover {
+  background: rgba(255, 230, 142, 0.15);
+  border-color: #ffe56b;
+  transform: translateY(-2px);
+}
+
+.social-buttons {
+  position: fixed;
+  right: max(20px, env(safe-area-inset-right));
+  bottom: max(80px, env(safe-area-inset-bottom) + 20px);
+  display: flex;
+  flex-direction: row;      /* 横排 */
+  gap: 16px;
+  z-index: 20;
+}
+
+.social-button {
   position: relative;
   display: block;
   width: 265px;
@@ -139,18 +165,9 @@ video {
     filter 180ms ease;
 }
 
-.wishlist-button:hover {
+.social-button:hover {
   transform: translateY(-2px);
   filter: brightness(1.06);
-}
-
-.wishlist-button:active {
-  transform: translateY(0) scale(0.99);
-}
-
-.wishlist-button:focus-visible {
-  outline: 2px solid #ffe56b;
-  outline-offset: 4px;
 }
 
 .wishlist-bg {
