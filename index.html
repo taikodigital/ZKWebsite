@@ -54,17 +54,17 @@
         data-scene-measure
         data-required-asset
       />
-      <div class="action-buttons" aria-label="Official links">
+      <div class="action-buttons" aria-label="Flame Hunter Zhong Kui action buttons">
         <a
           class="action-button watchTrailer-button"
           href="https://store.steampowered.com/app/4693180/Flame_Hunter_Zhong_Kui_Demo/"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Open Flame Hunter Zhong Kui Demo on Steam"
+          aria-label="Watch Flame Hunter Zhong Kui trailer"
         >
           <img
             class="watchTrailer-bg"
-            src="../assets/watchTrailer_button.png?v=20260827-1443"
+            src="./assets/watchTrailer_button.png?v=20260827-1443"
             alt=""
             data-required-asset
           />
@@ -74,41 +74,41 @@
           href="https://store.steampowered.com/app/4693180/Flame_Hunter_Zhong_Kui_Demo/"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Open Flame Hunter Zhong Kui Demo on Steam"
+          aria-label="Play Flame Hunter Zhong Kui Demo"
         >
           <img
             class="playDemo-bg"
-            src="../assets/playDemo_button.png?v=20260827-1443"
+            src="./assets/playDemo_button.png?v=20260827-1443"
             alt=""
             data-required-asset
           />
         </a>
         <a
           class="action-button wishlistNow-button"
-          href="https://store.steampowered.com/app/4693180/Flame_Hunter_Zhong_Kui_Demo/"
+          href="https://store.steampowered.com/app/4550140/_/"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Open Flame Hunter Zhong Kui Demo on Steam"
+          aria-label="Add Flame Hunter Zhong Kui to your wishlist"
         >
           <img
             class="wishlistNow-bg"
-            src="../assets/wishlistNow_button.png?v=20260827-1443"
+            src="./assets/wishlistNow_button.png?v=20260827-1443"
             alt=""
             data-required-asset
           />
         </a>
       </div>
-      <div class="social-buttons" aria-label="Official links">
+      <div class="social-buttons" aria-label="Flame Hunter Zhong Kui Official links">
         <a
           class="social-button downloadPresskit-button"
           href="https://store.steampowered.com/app/4693180/Flame_Hunter_Zhong_Kui_Demo/"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Open Flame Hunter Zhong Kui Demo on Steam"
+          aria-label="Download Flame Hunter Zhong Kui Presskit"
         >
           <img
             class="downloadPresskit-bg"
-            src="../assets/downloadPresskit_button.png?v=20260827-1443"
+            src="./assets/downloadPresskit_button.png?v=20260827-1443"
             alt=""
             data-required-asset
           />
@@ -118,11 +118,11 @@
           href="https://store.steampowered.com/app/4693180/Flame_Hunter_Zhong_Kui_Demo/"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Open Flame Hunter Zhong Kui Demo on Steam"
+          aria-label="Flame Hunter Zhong Kui Official Facebook"
         >
           <img
             class="facebook-bg"
-            src="../assets/facebook_button.png?v=20260827-1443"
+            src="./assets/facebook_button.png?v=20260827-1443"
             alt=""
             data-required-asset
           />
@@ -132,28 +132,32 @@
           href="https://store.steampowered.com/app/4693180/Flame_Hunter_Zhong_Kui_Demo/"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Open Flame Hunter Zhong Kui Demo on Steam"
+          aria-label="Flame Hunter Zhong Kui Official Discord"
         >
           <img
             class="discord-bg"
-            src="../assets/discord_button.png?v=20260827-1443"
+            src="./assets/discord_button.png?v=20260827-1443"
             alt=""
             data-required-asset
           />
         </a>
       </div>
 
-      <header class="site-header" aria-label="Site controls">
-        <div class="language-switch" role="group" aria-label="Language">
-          <button class="language-button is-active" type="button" data-lang="zh">
-            中
+      <dialog class="trailer-dialog" aria-labelledby="trailer-dialog-title">
+        <div class="trailer-dialog-content">
+          <h2 id="trailer-dialog-title" class="visually-hidden">Watch trailer</h2>
+          <button class="trailer-dialog-close" type="button" aria-label="Close trailer">
+            <span aria-hidden="true">&times;</span>
           </button>
-          <button class="language-button" type="button" data-lang="en">EN</button>
+          <video class="trailer-video" controls autoplay loop muted playsinline preload="auto">
+            <source src="./videos/landing_page.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
         </div>
-      </header>
+      </dialog>
 
       <p class="asset-warning" role="status">
-        素材文件暂未读取到，请把指定图片放入 assets 目录后刷新页面。
+        Asset file loading failed.
       </p>
     </main>
 

@@ -1,10 +1,13 @@
 const root = document.documentElement;
 const sceneShell = document.querySelector(".site-shell");
 const sceneMeasure = document.querySelector("[data-scene-measure]");
-const buttons = Array.from(document.querySelectorAll(".language-button"));
 const languageArt = Array.from(document.querySelectorAll(".language-art"));
 const requiredAssets = Array.from(document.querySelectorAll("[data-required-asset]"));
 const hotspots = Array.from(document.querySelectorAll("[data-hotspot-art]"));
+const trailerButton = document.querySelector(".watchTrailer-button");
+const trailerDialog = document.querySelector(".trailer-dialog");
+const trailerVideo = document.querySelector(".trailer-video");
+const trailerCloseButton = document.querySelector(".trailer-dialog-close");
 
 requiredAssets.forEach((asset) => {
   asset.addEventListener(
@@ -64,24 +67,6 @@ function updateHotspots(shellRect, imageWidth, imageHeight) {
   });
 }
 
-function setLanguage(language) {
-  const nextLanguage = language === "en" ? "en" : "zh";
-  root.dataset.lang = nextLanguage;
-  root.lang = nextLanguage === "zh" ? "zh-CN" : "en";
-
-  buttons.forEach((button) => {
-    const isActive = button.dataset.lang === nextLanguage;
-    button.classList.toggle("is-active", isActive);
-    button.setAttribute("aria-pressed", String(isActive));
-  });
-
-  languageArt.forEach((art) => {
-    art.classList.toggle("is-active", art.dataset.lang === nextLanguage);
-  });
-
-  localStorage.setItem("zk-website-language", nextLanguage);
-}
-
 function updateSceneContentBox() {
   if (
     !sceneShell ||
@@ -108,12 +93,6 @@ function updateSceneContentBox() {
   updateHotspots(shellRect, sceneMeasure.naturalWidth, sceneMeasure.naturalHeight);
 }
 
-buttons.forEach((button) => {
-  button.addEventListener("click", () => {
-    setLanguage(button.dataset.lang);
-  });
-});
-
 requiredAssets.forEach((asset) => {
   asset.addEventListener(
     "error",
@@ -135,6 +114,24 @@ if (sceneMeasure) {
 window.addEventListener("resize", updateSceneContentBox);
 window.addEventListener("orientationchange", updateSceneContentBox);
 
-const requestedLanguage = new URLSearchParams(window.location.search).get("lang");
-setLanguage(requestedLanguage || localStorage.getItem("zk-website-language") || "zh");
+function closeTrailer() {
+  trailerVideo.pause();
+  trailerVideo.currentTime = 0;
+  trailerDialog.close();
+}
+
+trailerButton.addEventListener("click", (event) => {
+  event.preventDefault();
+  trailerDialog.showModal();
+  trailerVideo.currentTime = 0;
+  trailerVideo.play().catch(() => {});
+});
+
+trailerCloseButton.addEventListener("click", closeTrailer);
+trailerDialog.addEventListener("click", (event) => {
+  if (event.target === trailerDialog) {
+    closeTrailer();
+  }
+});
+
 updateSceneContentBox();
