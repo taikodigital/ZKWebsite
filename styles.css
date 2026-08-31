@@ -147,6 +147,8 @@ button {
   align-items: flex-end;
   gap: clamp(12px, 2.3vw, 60px);
   z-index: 20;
+  transform: scale(0.5);
+  transform-origin: bottom right;
 }
 
 .social-button {
