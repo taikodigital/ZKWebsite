@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-lang="en" data-build="20260813-1937">
+<html lang="en" data-lang="en" data-build="20260902-1431">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,7 +7,7 @@
       name="description"
       content="Flame Hunter Zhong Kui official teaser page."
     />
-    <meta name="build-version" content="20260813-1937" />
+    <meta name="build-version" content="20260902-1431" />
     <link
       rel="icon"
       type="image/png"
@@ -17,20 +17,20 @@
     <title>Flame Hunter Zhong Kui</title>
     <link
       rel="preload"
-      href="../assets/steam/weBg_mobile.jpg?v=20260813-1937"
+      href="../assets/steam/weBg_mobile.jpg?v=20260902-1431"
       as="image"
     />
     <link
       rel="preload"
-      href="../assets/steam/webGameTitle_mobile.png?v=20260813-1937"
+      href="../assets/steam/webGameTitle_mobile.png?v=20260902-1431"
       as="image"
     />
     <link
       rel="preload"
-      href="../assets/steam/webButton_mobile.png?v=20260813-1937"
+      href="../assets/steam/webButton_mobile.png?v=20260902-1431"
       as="image"
     />
-    <link rel="stylesheet" href="./styles.css?v=20260813-1937" />
+    <link rel="stylesheet" href="./styles.css?v=20260902-1431" />
 
     <!-- 默认隐藏警告 -->
     <style>
@@ -127,9 +127,9 @@
             return res.json();
           })
           .then(translations => {
-            const wishlistEl = document.querySelector('.wishlist-text');
-            if (wishlistEl && translations.wishlist) {
-              wishlistEl.textContent = translations.wishlist;
+            const playDemoEl = document.querySelector('.play-demo-text');
+            if (playDemoEl && translations.playDemo) {
+              playDemoEl.textContent = translations.playDemo;
             }
             const footerEl = document.querySelector('.footer-disclaimer p');
             if (footerEl && translations.footer_text) {
@@ -142,8 +142,8 @@
           .catch(err => {
             console.warn('Language file load failed:', err);
             // 降级方案：使用英文硬编码
-            const wishlistEl = document.querySelector('.wishlist-text');
-            if (wishlistEl) wishlistEl.textContent = 'WISHLIST NOW';
+            const playDemoEl = document.querySelector('.play-demo-text');
+            if (playDemoEl) playDemoEl.textContent = 'PLAY DEMO';
             const footerEl = document.querySelector('.footer-disclaimer p');
             if (footerEl) footerEl.textContent = 'We use the Meta Pixel for analytics and advertising optimization. Data is hashed and anonymized.';
           });
@@ -156,7 +156,7 @@
     <main class="site-shell" aria-label="Flame Hunter Zhong Kui official website">
       <img
         class="scene-bg"
-        src="../assets/steam/weBg_mobile.jpg?v=20260813-1937"
+        src="../assets/steam/weBg_mobile.jpg?v=20260902-1431"
         alt=""
         data-required-asset
       />
@@ -164,28 +164,28 @@
       <section class="hero-content" aria-label="Flame Hunter Zhong Kui">
         <img
           class="game-title"
-          src="../assets/steam/webGameTitle_mobile.png?v=20260813-1937"
+          src="../assets/steam/webGameTitle_mobile.png?v=20260902-1431"
           alt="Flame Hunter Zhong Kui"
           data-required-asset
         />
 
         <a
-          class="wishlist-button"
+          class="play-demo-button"
           href="#"
           rel="noopener noreferrer"
-          aria-label="Wishlist Flame Hunter Zhong Kui on Steam"
+          aria-label="Play Flame Hunter Zhong Kui Demo on Steam"
           onclick="fbq('track', 'Lead', {content_name: 'Steam_Button_Click'}); setTimeout(function(){ 
               var params = window.location.search; 
               window.location.href='https://store.steampowered.com/app/4550140/beetle' + params; 
           }, 300); return false;"
         >
           <img
-            class="wishlist-bg"
-            src="../assets/steam/webButton_mobile.png?v=20260813-1937"
+            class="play-demo-bg"
+            src="../assets/steam/webButton_mobile.png?v=20260902-1431"
             alt=""
             data-required-asset
           />
-          <span class="wishlist-text" aria-hidden="true">WISHLIST NOW</span>
+          <span class="play-demo-text" aria-hidden="true">PLAY DEMO</span>
         </a>
         <video height="154" autoplay loop muted playsinline preload="auto">
           <source src="/videos/landing_page.mp4" type="video/mp4">
@@ -203,6 +203,6 @@
       <p>We use the Meta Pixel for analytics and advertising optimization. Data is hashed and anonymized.</p>
     </div>
 
-    <script src="./script.js?v=20260813-1937"></script>
+    <script src="./script.js?v=20260902-1431"></script>
   </body>
 </html>

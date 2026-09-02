@@ -1,0 +1,258 @@
+:root {
+  color-scheme: dark;
+  --control-bg: rgba(7, 10, 14, 0.62);
+  --control-border: rgba(255, 230, 142, 0.28);
+  --control-active: #ffd21f;
+  --control-text: #f8f1d7;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  min-width: 320px;
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  min-height: 100svh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: #000;
+  color: var(--control-text);
+  font-family:
+    Inter,
+    "Segoe UI",
+    "Microsoft YaHei",
+    Arial,
+    sans-serif;
+}
+
+button {
+  font: inherit;
+}
+
+video {
+    margin-top: 25px;
+}
+
+/* ---------- Phone-ratio stage ----------
+   The stage keeps a 9:20 (phone) portrait ratio. On wide screens its width
+   is capped at 45dvh so the stage is exactly one viewport tall; the image
+   scales up uniformly with it. On narrow screens it fills the width and the
+   height follows the image ratio, so the page can scroll. */
+
+.site-shell {
+  position: relative;
+  width: min(100vw, 45vh);
+  width: min(100vw, 45dvh);
+  min-height: 100svh;
+  aspect-ratio: 9 / 20;
+  margin-inline: auto;
+  overflow: hidden;
+  isolation: isolate;
+  background: #07090c;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    0 40px 90px rgba(0, 0, 0, 0.55);
+}
+
+@supports (height: 100dvh) {
+  body,
+  .site-shell {
+    min-height: 100dvh;
+  }
+}
+
+/* ---------- Background ---------- */
+
+.scene-bg {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.footer-disclaimer {
+    text-align: center;           /* 文字居中 */
+    font-size: 12px;              /* 小号字体 */
+    color: #888;                  /* 灰色，不那么显眼 */
+    padding: 20px 10px;           /* 上下内边距20px，左右10px */
+    border-top: 1px solid #eee;   /* 可选：顶部加一条浅色分割线 */
+    margin-top: 40px;             /* 与上方内容保持距离 */
+    font-family: Arial, sans-serif; /* 字体 */
+    line-height: 1.5;             /* 行高，让文字不拥挤 */
+}
+
+/* ---------- Hero content ----------
+   Designed at a fixed 390x866.7 (logical px) base; script.js scales the
+   whole layer uniformly to the actual image area, so every element
+   (title, button, text, spacing) grows together in proportion. */
+
+.hero-content {
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 390px;
+  height: 866.7px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: calc(40px + env(safe-area-inset-top)) 20px 0;
+  transform-origin: top left;
+}
+
+.game-title {
+  width: 300px;
+  max-width: 100%;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  filter: drop-shadow(0 12px 28px rgba(0, 0, 0, 0.5));
+}
+
+.play-demo-button {
+  position: relative;
+  display: block;
+  width: 265px;
+  max-width: 100%;
+  margin-top: 30px;
+  border-radius: 12px;
+  text-decoration: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform 180ms ease,
+    filter 180ms ease;
+}
+
+.play-demo-button:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.06);
+}
+
+.play-demo-button:active {
+  transform: translateY(0) scale(0.99);
+}
+
+.play-demo-button:focus-visible {
+  outline: 2px solid #ffe56b;
+  outline-offset: 4px;
+}
+
+.play-demo-bg {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: inherit;
+}
+
+.play-demo-text {
+  position: absolute;
+  left: 50%;
+  top: 32%;
+  transform: translate(-50%, -50%);
+  width: 92%;
+  text-align: center;
+  white-space: nowrap;
+  font-size: clamp(12px, 2.5vw, 20px);  /* 最小12px，优选2.5vw，最大20px */
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  color: #ffe56b;
+  text-shadow:
+    0 2px 10px rgba(0, 0, 0, 0.55),
+    0 0 2px rgba(0, 0, 0, 0.85);
+  pointer-events: none;
+}
+
+/* ---------- Localized text ---------- */
+
+.localized-text {
+  display: none;
+}
+
+html[data-lang="zh"] .localized-text[data-lang="zh"],
+html[data-lang="en"] .localized-text[data-lang="en"] {
+  display: inline;
+}
+
+/* ---------- Asset warning ---------- */
+
+.asset-warning {
+  position: fixed;
+  z-index: 13;
+  left: max(18px, env(safe-area-inset-left));
+  bottom: max(18px, env(safe-area-inset-bottom));
+  display: none;
+  max-width: min(520px, calc(100vw - 36px));
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 221, 87, 0.36);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.68);
+  color: #fff2b5;
+  font-size: 13px;
+  line-height: 1.55;
+  backdrop-filter: blur(10px);
+}
+
+.has-missing-assets .asset-warning {
+  display: block;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 760px) {
+  /* Narrow screens: fill the width, height follows the 9:20 ratio
+     (may exceed the viewport and scroll). */
+  .site-shell {
+    width: 100%;
+    box-shadow: none;
+  }
+
+  .site-header {
+    top: max(12px, env(safe-area-inset-top));
+    right: max(12px, env(safe-area-inset-right));
+  }
+
+  .language-button {
+    min-width: 40px;
+    min-height: 34px;
+    font-size: 13px;
+  }
+}
+
+/* Landscape short screens (e.g. phones held sideways): fall back to
+   full-bleed so the stage never collapses to a tiny strip. */
+@media (orientation: landscape) and (max-height: 560px) {
+  .site-shell {
+    width: 100%;
+    max-width: none;
+    aspect-ratio: auto;
+    box-shadow: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 1ms !important;
+  }
+}
